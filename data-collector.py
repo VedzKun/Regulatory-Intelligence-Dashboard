@@ -18,16 +18,17 @@ def scrape_dgft_public_notices(url):
         if table:
             for row in table.find_all('tr')[1:]:  # Skip header
                 cols = row.find_all('td')
-                if len(cols) >= 3:
-                    date = cols[0].get_text(strip=True)
-                    title = cols[1].get_text(strip=True)
-                    link_tag = cols[1].find('a', href=True)
+                if len(cols) >= 4:
+                    date = cols[1].get_text(strip=True)
+                    subject_col = cols[2]
+                    title = subject_col.get_text(strip=True)
+                    link_tag = subject_col.find('a', href=True)
                     link = link_tag['href'] if link_tag else ''
                     if link and not link.startswith('http'):
                         link = f"https://www.dgft.gov.in{link}"
                     notices.append({
-                        'Title': title,
                         'Date': date,
+                        'Title': title,
                         'Link': link
                     })
         else:
